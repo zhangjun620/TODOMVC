@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="vue.js"></script>
+  <title>Document</title>
+</head>
+<style>
+</style>
+<body>
+  <!-- 
+    ** todomvc功能
+    一个任务的状态，待办，已完成
+    1.enter健添加☑️，双击修改 删除☑️
+    2.单个任务点击圈完成，再点击切换未完成。
+    3.下方状态栏 无、待办计数器、全部、待办、已完成、已完成、清除已完成（无已完成时隐藏）
+   -->
+
+  <div id="app">
+    <section>
+        <input type="button" @click="addActive">
+        <input type="text" v-on:keyup.enter="addActive" >
+    </section>
+    <main>
+      <div v-for="(item, index) in allList" >
+        <div>
+          <input type="button" @click="completed(index)"> 
+          <input type="text" :value="item.content">
+          <span @click="deleteOne(index)">X</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+ 
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+      enterActive: '',
+      allList:[],
+      activeList:[],
+      completList:[],
+      isHaveComplet: false,
+      isCheckActive: false,
+    },
+    methods:{
+      addActive(e){
+        // console.log(e.target.value)
+        if(e.target.value){
+          let name = {
+            content: e.target.value,
+            isComplet: false
+          }
+          this.allList.push(name)
+        }else {
+          return 
+        }
+      },
+      completed(event){
+        console.log(event)
+      },
+      deleteOne(e){
+        let a = Number(e)
+        this.allList.splice(a,1)
+      },
+    }
+  })
+</script>
+</body>
+</html>
