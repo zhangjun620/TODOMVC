@@ -4,18 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="stylus.css">
   <script src="vue.js"></script>
   <title>Document</title>
 </head>
-<style>
-</style>
 <body>
   <!-- 
     ** todomvc功能
     一个任务的状态，待办，已完成
     1.enter健添加☑️，双击修改 删除☑️
     2.单个任务点击圈完成，再点击切换未完成。
-    3.下方状态栏 无、待办计数器、全部、待办、已完成、已完成、清除已完成（无已完成时隐藏）
+    3.下方状态栏 无、待办计数器☑️、全部、待办、已完成、已完成、清除已完成（无已完成时隐藏）
    -->
 
   <div id="app">
@@ -24,13 +23,20 @@
         <input type="text" v-on:keyup.enter="addActive" >
     </section>
     <main>
-      <div v-for="(item, index) in allList" >
+      <div v-for="(item, index) in showList" >
         <div>
           <input type="button" @click="completed(index)"> 
           <input type="text" :value="item.content">
           <span @click="deleteOne(index)">X</span>
         </div>
       </div>
+      <footer>
+        <div>{{ count }} items left</div>
+        <div v-bind:class="{ isCheck : isAll }" @click="changeStatus" data-num="0">All</div>
+        <div v-bind:class="{ isCheck : isActive }" @click="changeStatus" data-num="1">Active</div>
+        <div v-bind:class="{ isCheck : isCompleted }" @click="changeStatus" data-num="2"> completed</div>
+        <div v-show="isCompleted">Clear completed</div>
+      </footer>
     </main>
   </div>
 
@@ -39,7 +45,13 @@
   var app = new Vue({
     el: '#app',
     data: {
+      count: 0,
       enterActive: '',
+      isAll: true,
+      isActive: false,
+      isCompleted: false,
+      isCompletList: false,
+      showList: [],
       allList:[],
       activeList:[],
       completList:[],
@@ -47,6 +59,11 @@
       isCheckActive: false,
     },
     methods:{
+      // 总数
+      items(){
+        this.count = this.allList.length
+      },
+      // 增加一个待办
       addActive(e){
         // console.log(e.target.value)
         if(e.target.value){
@@ -54,17 +71,44 @@
             content: e.target.value,
             isComplet: false
           }
-          this.allList.push(name)
+          e.target.value = '';
+          this.allList.push(name);
+          this.showList = this.allList
+          this.items();
         }else {
           return 
         }
       },
+      // 切换显示
+      changeStatus(e){
+        // console.log(e.target.dataset.num)
+        let num = Number(e.target.dataset.num)
+        switch(num){
+          case 0:
+            this.isAll = true;
+            this.isActive = false;
+            this.isCompleted = false;
+            break;
+          case 1:
+            this.isActive = true;
+            this.isAll = false;
+            this.isCompleted = false;
+            break;
+          case 2:
+            this.isCompleted = true;
+            this.isActive = false;
+            this.isAll = false;
+            break;
+        }
+      },
+      // 已完成
       completed(event){
         console.log(event)
       },
       deleteOne(e){
-        let a = Number(e)
-        this.allList.splice(a,1)
+        let a = Number(e);
+        this.allList.splice(a,1);
+        this.items();
       },
     }
   })
