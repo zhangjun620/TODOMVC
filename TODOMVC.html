@@ -12,15 +12,19 @@
   <!-- 
     ** todomvc功能
     一个任务的状态，待办，已完成
-    1.enter健添加☑️，双击修改 删除☑️
+    1.enter健添加待办☑️，双击修改、 删除☑️
     2.单个任务点击圈完成，再点击切换未完成。
     3.下方状态栏 无、待办计数器☑️、全部、待办、已完成、已完成、清除已完成（无已完成时隐藏）
+      没有待办时隐藏下方状态栏☑️
+      4个列表 当已完成不为空时，清除已完成显示
+      单个item和多个items显示
+      显示列表想用一个list显示，根据isComplet来切换显示
    -->
 
   <div id="app">
     <section>
         <input type="button" @click="addActive">
-        <input type="text" v-on:keyup.enter="addActive" >
+        <input type="text" @keyup.enter="addActive" >
     </section>
     <main>
       <div v-for="(item, index) in showList" >
@@ -30,12 +34,12 @@
           <span @click="deleteOne(index)">X</span>
         </div>
       </div>
-      <footer>
-        <div>{{ count }} items left</div>
+      <footer v-show="showList.length">
+        <div>{{ count }} item left</div>
         <div v-bind:class="{ isCheck : isAll }" @click="changeStatus" data-num="0">All</div>
         <div v-bind:class="{ isCheck : isActive }" @click="changeStatus" data-num="1">Active</div>
         <div v-bind:class="{ isCheck : isCompleted }" @click="changeStatus" data-num="2"> completed</div>
-        <div v-show="isCompleted">Clear completed</div>
+        <div v-show="clearComplet">Clear completed</div>
       </footer>
     </main>
   </div>
@@ -50,18 +54,16 @@
       isAll: true,
       isActive: false,
       isCompleted: false,
-      isCompletList: false,
+      clearComplet: false,
       showList: [],
-      allList:[],
-      activeList:[],
-      completList:[],
+      backShowList: [],
       isHaveComplet: false,
       isCheckActive: false,
     },
     methods:{
       // 总数
       items(){
-        this.count = this.allList.length
+        this.count = this.showList.length
       },
       // 增加一个待办
       addActive(e){
@@ -72,8 +74,8 @@
             isComplet: false
           }
           e.target.value = '';
-          this.allList.push(name);
-          this.showList = this.allList
+          this.showList.push(name);
+          this.backShowList = this.showList
           this.items();
         }else {
           return 
@@ -83,33 +85,49 @@
       changeStatus(e){
         // console.log(e.target.dataset.num)
         let num = Number(e.target.dataset.num)
+        
         switch(num){
           case 0:
             this.isAll = true;
             this.isActive = false;
             this.isCompleted = false;
+            this.showList = this.backShowList
             break;
           case 1:
             this.isActive = true;
             this.isAll = false;
             this.isCompleted = false;
+            let alist = this.backShowList.filter(e => !e.isComplet);
+            this.showList = alist
             break;
           case 2:
             this.isCompleted = true;
             this.isActive = false;
             this.isAll = false;
+            let list = this.backShowList.filter(e => e.isComplet)
+            this.showList = list
             break;
         }
       },
-      // 已完成
+      // 点击已完成
       completed(event){
-        console.log(event)
+        // if(this.completList.length > 0){
+        //   this.clearCompletList = true;
+        // }
+        this.showList[event].isComplet = true;
       },
       deleteOne(e){
         let a = Number(e);
         this.allList.splice(a,1);
         this.items();
       },
+    },
+    watch:{
+      showList:{
+        handler:(newv,oldv)=>{
+          console.log(oldv,newv)
+        }
+      }
     }
   })
 </script>
