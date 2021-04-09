@@ -34,7 +34,7 @@
       <a @click="changetoReact" class="react-content" >React</a>
     </aside>
     <!-- vue content -->
-    <div v-if="!showDifference" class="">
+    <div v-if="!showDifference" class="all">
       <section class="">
         <input type="checkbox" v-model="allChecked" @click="allCheckClear" >
         <input 
@@ -48,7 +48,7 @@
           <div>
             <input type="checkbox" @click="completed(index)" :checked='item.isChecked'> 
             <input type="text" :value="item.content">
-            <span @click="deleteOne(index)">X</span>
+            <span @click="deleteOne(index)" class="delete-button">X</span>
           </div>
         </div>
         <footer v-show="allList.length > 0" >
