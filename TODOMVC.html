@@ -36,7 +36,9 @@
     <!-- vue content -->
     <div v-if="!showDifference" class="all">
       <section class="">
-        <input type="checkbox" v-model="allChecked" @click="allCheckClear" >
+        <div class="as">
+          <input type="checkbox" v-model="allChecked" @click="allCheckClear" v-show="allList.length > 0">
+        </div>
         <input 
           class="text-input"
           type="text" @keyup.enter="addActive"
