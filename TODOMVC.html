@@ -6,6 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="stylus.css">
   <script src="vue.js"></script>
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  
   <title>Document</title>
 </head>
 <body>
@@ -34,7 +37,7 @@
       <a @click="changetoReact" class="react-content" >React</a>
     </aside>
     <!-- vue content -->
-    <div v-if="!showDifference" class="all">
+    <div v-if="showDifference" class="all">
       <section class="">
         <div class="as">
           <input type="checkbox" v-model="allChecked" @click="allCheckClear" v-show="allList.length > 0">
@@ -65,7 +68,7 @@
       </main>
     </div>
     <!-- react content -->
-    <div v-if="showDifference">123</div>
+    <div v-if="!showDifference" id="react_view"></div>
     
   </div>
 
@@ -225,5 +228,6 @@
     }
   })
 </script>
+<script src="react_view.js"></script>
 </body>
 </html>
